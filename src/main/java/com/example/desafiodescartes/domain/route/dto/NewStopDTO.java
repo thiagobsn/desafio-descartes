@@ -22,9 +22,6 @@ public class NewStopDTO {
 	private Double longitude;
 	
 	@NotNull
-	private String status;
-	
-	@NotNull
 	private Integer deliveryRadius;
 
 }

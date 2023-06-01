@@ -1,5 +1,7 @@
 package com.example.desafiodescartes.domain.route.dto;
 
+import com.example.desafiodescartes.domain.route.enums.StatusStopEnum;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateStopDTO {
 	
-	@NotNull
 	private Long id;
 	
 	@NotNull
@@ -25,7 +26,7 @@ public class UpdateStopDTO {
 	private Double longitude;
 	
 	@NotNull
-	private String status;
+	private StatusStopEnum status;
 	
 	@NotNull
 	private Integer deliveryRadius;
