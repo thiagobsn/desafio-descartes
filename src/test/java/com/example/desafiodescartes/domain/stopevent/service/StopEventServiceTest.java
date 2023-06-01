@@ -103,7 +103,7 @@ public class StopEventServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Create events to set Route status to done")
+	@DisplayName("Create event invalid")
 	@Transactional
 	public void addNewEventScenario2() throws Exception {
 		
