@@ -15,8 +15,8 @@ import com.example.desafiodescartes.domain.route.mapper.RouteMapper;
 import com.example.desafiodescartes.domain.route.repository.RouteRepository;
 import com.example.desafiodescartes.exception.InvalidLatitudeLongitudeException;
 import com.example.desafiodescartes.exception.RouteStartedException;
+import com.example.desafiodescartes.util.ManualValidator;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,6 +26,8 @@ public class RouteService {
 	public final RouteRepository routeRepository;
 	
 	public final RouteMapper routeMapper;
+	
+	public final ManualValidator manualValidator;
 	
 	public RouteDTO findBy(Long id) {
 		Route route = routeRepository.findById(id).orElseThrow();
@@ -40,24 +42,31 @@ public class RouteService {
 		return routeMapper.toRouteDTO(routeRepository.findAll());
 	}
 
-	public RouteDTO createNewRoute(@Valid NewRouteDTO dto) {
+	public RouteDTO createNewRoute(NewRouteDTO dto) {
+		manualValidator.validate(dto);
 		Route route = routeMapper.toRoute(dto);
 		route.getStops().forEach(this::validateStopLatitudeLongitude);
+		route.getStops().forEach(stop -> stop.setStatus(StatusStopEnum.NOT_ANSWER));
+		route.setStatus(StatusRouteEnum.NOT_STARTED);		
 		route.addRouteToStops();
 		route = routeRepository.save(route);
 		return routeMapper.toRouteDTO(route);
 	}
 	
-	public RouteDTO updateRoute(@Valid UpdateRouteDTO dto) {
+	public RouteDTO updateRoute(UpdateRouteDTO dto) {
+		manualValidator.validate(dto);
+		Route route = routeRepository.findById(dto.getId()).orElseThrow();
 		
-		routeRepository.findById(dto.getId()).orElseThrow();
-		Route route = routeMapper.toRoute(dto);
+		if(!StatusRouteEnum.NOT_STARTED.equals(route.getStatus()))
+			throw new RouteStartedException();
 		
-		route.getStops().forEach(this::validateStopLatitudeLongitude);
-		route.addRouteToStops();
+		Route routeUpdate = routeMapper.toRoute(dto);
 		
-		route = routeRepository.save(route);
-		return routeMapper.toRouteDTO(route);
+		routeUpdate.getStops().forEach(this::validateStopLatitudeLongitude);
+		routeUpdate.addRouteToStops();
+		
+		route = routeRepository.save(routeUpdate);
+		return routeMapper.toRouteDTO(routeUpdate);
 	}
 	
 	public void deleteBy(Long id) {

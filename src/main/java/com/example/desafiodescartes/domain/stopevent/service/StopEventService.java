@@ -17,6 +17,7 @@ import com.example.desafiodescartes.domain.stopevent.entity.StopEvent;
 import com.example.desafiodescartes.domain.stopevent.mapper.StopEventMapper;
 import com.example.desafiodescartes.domain.stopevent.repository.StopEventRepository;
 import com.example.desafiodescartes.util.HaversineUtil;
+import com.example.desafiodescartes.util.ManualValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,10 +34,14 @@ public class StopEventService {
 	public final StopEventMapper stopEventMapper;
 
 	public final HaversineUtil haversineUtil;
+	
+	public final ManualValidator manualValidator;
 
 	public static Integer RANGE_TIME = 5;
 
 	public void addNewEvent(NewStopEventDTO dto) {
+		
+		manualValidator.validate(dto);
 
 		StopEvent newStopEvent = stopEventMapper.toRouteDTO(dto);
 		RouteDTO route = routeService.findBy(newStopEvent.getIdRoute());
