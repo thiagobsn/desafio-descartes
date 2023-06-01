@@ -34,7 +34,7 @@ public class HandleException {
 	@ExceptionHandler(RouteStartedException.class)
 	public ResponseEntity<?> handleErroRouteStartedException(RouteStartedException ex) {
 		return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED)
-				.body(messageBundle.getString("route.erro.delete.route.started.or.done"));
+				.body(messageBundle.getString("route.erro.delete.update.route.started.or.done"));
 	}
 	
 	@ExceptionHandler(NoSuchElementException.class)
