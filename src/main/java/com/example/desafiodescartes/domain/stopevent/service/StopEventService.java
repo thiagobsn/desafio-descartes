@@ -63,7 +63,7 @@ public class StopEventService {
 				.findFirst();
 
 		if (stopOptional.isEmpty()) {
-			updateStopAndRouteIfLastEventStatusEqualsOnAnswer(route, lastEvent);
+			updateStopAndRouteIfLastEventStatusEqualsOnAnswer(route, lastEvent, newStopEvent);
 			return;
 		}
 
@@ -96,11 +96,15 @@ public class StopEventService {
 		return lastEvent.getIdStop() != null && lastEvent.getIdStop().equals(newStopEvent.getIdStop());
 	}
 
-	private void updateStopAndRouteIfLastEventStatusEqualsOnAnswer(RouteDTO route, StopEvent lastEvent) {
+	private void updateStopAndRouteIfLastEventStatusEqualsOnAnswer(RouteDTO route, StopEvent lastEvent, StopEvent newStopEvent) {
 		if (!StatusStopEnum.ON_ANSWER.equals(lastEvent.getStatusStop()))
 			return;
 
 		stopService.updateStatusToAnswer(lastEvent.getIdStop());
+		
+		newStopEvent.setStatusStop(StatusStopEnum.ANSWER);
+		newStopEvent.setIdStop(lastEvent.getIdStop());
+		saveStopEvent(newStopEvent);
 
 		Boolean allStopsAnswer = route.getStops().stream()
 				.filter(stop -> !stop.getStopCode().equals(lastEvent.getIdStop()))
