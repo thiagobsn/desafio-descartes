@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.desafiodescartes.domain.route.dto.NewRouteDTO;
 import com.example.desafiodescartes.domain.route.dto.RouteDTO;
+import com.example.desafiodescartes.domain.route.dto.RouteStatusDTO;
+import com.example.desafiodescartes.domain.route.dto.RouteStopLongerDTO;
 import com.example.desafiodescartes.domain.route.dto.UpdateRouteDTO;
 import com.example.desafiodescartes.domain.route.entity.Route;
 import com.example.desafiodescartes.domain.route.entity.Stop;
@@ -88,6 +90,14 @@ public class RouteService {
 	
 	public RouteDTO updateStatusToDone(Long id) {
 		return updateStatus(id, StatusRouteEnum.DONE);
+	}
+	
+	public List<RouteStatusDTO> findAllWithStatus() {
+		return routeRepository.findAllWithStatus();
+	}
+	
+	public List<RouteStopLongerDTO> listLongerStopsRoutes() {
+		return routeRepository.listLongerStopsRoutes();
 	}
 	
 	private RouteDTO updateStatus(Long id, StatusRouteEnum newStatus) {

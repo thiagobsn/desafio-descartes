@@ -1,7 +1,10 @@
 package com.example.desafiodescartes.domain.route.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.example.desafiodescartes.domain.route.dto.RouteStopStatusDTO;
 import com.example.desafiodescartes.domain.route.dto.StopDTO;
 import com.example.desafiodescartes.domain.route.entity.Stop;
 import com.example.desafiodescartes.domain.route.enums.StatusStopEnum;
@@ -31,6 +34,16 @@ public class StopService {
 		stop.setStatus(newStatus);
 		stop = stopRepository.save(stop);
 		return routeMapper.toStopDTO(stop);
+	}
+
+	public List<RouteStopStatusDTO> listAllByStatusAnswer() {
+
+		List<Stop> list = stopRepository.findAllByStatus(StatusStopEnum.ANSWER);
+
+		return list.stream().map(stop -> {
+			return RouteStopStatusDTO.builder().idRoute(stop.getRoute().getId()).idStop(stop.getId())
+					.descriptionStop(stop.getDescription()).statusStop(stop.getStatus()).build();
+		}).toList();
 	}
 
 }
